@@ -370,7 +370,7 @@ class _RecordButtonState extends State<RecordButton> {
           record = Record();
           await record!.start(
             path:
-                "${SocialMediaFilePath.documentPath}audio_${DateTime.now().millisecondsSinceEpoch}.acc",
+                "${SocialMediaFilePath.documentPath}audio_${DateTime.now().millisecondsSinceEpoch}.aac",
             encoder: AudioEncoder.aacLc,
             bitRate: 128000,
             samplingRate: 44100,
