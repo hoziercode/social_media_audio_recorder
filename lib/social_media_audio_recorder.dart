@@ -265,7 +265,7 @@ class _RecordButtonState extends State<RecordButton> {
                 FlowShader(
                   duration: const Duration(seconds: 3),
                   flowColors: [widget.arrowColor ?? Colors.white, Colors.grey],
-                  child: Text("Tap lock to stop",
+                  child: Text("Tap lock to send",
                       style: TextStyle(
                           color: widget.allTextColor ?? Colors.black)),
                 ),
@@ -372,6 +372,7 @@ class _RecordButtonState extends State<RecordButton> {
               encoder: AudioEncoder.aacLc,
               bitRate: 128000,
               sampleRate: 44100,
+              androidConfig: AndroidRecordConfig()
             ),
             path:
                 "${SocialMediaFilePath.documentPath}audio_${DateTime.now().millisecondsSinceEpoch}.aac",
