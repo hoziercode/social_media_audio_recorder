@@ -70,7 +70,7 @@ class _RecordButtonState extends State<RecordButton> {
   DateTime? startTime;
   Timer? timer;
   String recordDuration = "00:00";
-  Record? record;
+  AudioRecorder? record;
 
   bool isLocked = false;
   bool showLottie = false;
@@ -247,7 +247,7 @@ class _RecordButtonState extends State<RecordButton> {
               startTime = null;
               recordDuration = "00:00";
 
-              var filePath = await Record().stop(); //Record file
+              var filePath = await AudioRecorder().stop(); //Record file
 
               setState(() {
                 isLocked = false;
@@ -365,14 +365,16 @@ class _RecordButtonState extends State<RecordButton> {
       onLongPress: () async {
         debugPrint("onLongPress");
         Vibration.vibrate();
-        if (await Record().hasPermission()) {
-          record = Record();
+        if (await AudioRecorder().hasPermission()) {
+          record = AudioRecorder();
           await record!.start(
+            const RecordConfig(
+              encoder: AudioEncoder.aacLc,
+              bitRate: 128000,
+              sampleRate: 44100,
+            ),
             path:
                 "${SocialMediaFilePath.documentPath}audio_${DateTime.now().millisecondsSinceEpoch}.aac",
-            encoder: AudioEncoder.aacLc,
-            bitRate: 128000,
-            samplingRate: 44100,
           );
           startTime = DateTime.now();
           timer = Timer.periodic(const Duration(seconds: 1), (_) {

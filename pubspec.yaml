@@ -14,7 +14,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   permission_handler: ^10.2.0
   path_provider: ^2.0.15
-  record: ^4.4.4
+  record: ^5.1.2
   vibration: ^1.8.4
   lottie: ^2.1.0
   font_awesome_flutter: ^10.3.0
