@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:vibration/vibration.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -38,23 +38,23 @@ class RecordButton extends StatefulWidget {
   final Function(String value) onRecordEnd;
   final Function onRecordStart;
   final Function onCancelRecord;
-  const RecordButton(
-      {Key? key,
-      required this.controller,
-        this.releaseToSend=false,
-      this.timerWidth,
-      this.lockerHeight = 200,
-      this.size = 55,
-      this.color = Colors.white,
-      this.radius = 10,
-      required this.onRecordEnd,
-      required this.onRecordStart,
-      required this.onCancelRecord,
-      this.allTextColor,
-      this.arrowColor,
-      this.recordButtonColor,
-      this.recordBgColor, })
-      : super(key: key);
+  const RecordButton({
+    Key? key,
+    required this.controller,
+    this.releaseToSend = false,
+    this.timerWidth,
+    this.lockerHeight = 200,
+    this.size = 55,
+    this.color = Colors.white,
+    this.radius = 10,
+    required this.onRecordEnd,
+    required this.onRecordStart,
+    required this.onCancelRecord,
+    this.allTextColor,
+    this.arrowColor,
+    this.recordButtonColor,
+    this.recordBgColor,
+  }) : super(key: key);
 
   @override
   State<RecordButton> createState() => _RecordButtonState();
@@ -241,7 +241,7 @@ class _RecordButtonState extends State<RecordButton> {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () async {
-              Vibrate.feedback(FeedbackType.success);
+              Vibration.vibrate();
               timer?.cancel();
               timer = null;
               startTime = null;
@@ -310,7 +310,7 @@ class _RecordButtonState extends State<RecordButton> {
         debugPrint("onLongPressEnd");
 
         if (isCancelled(details.localPosition, context)) {
-          Vibrate.feedback(FeedbackType.heavy);
+          Vibration.vibrate();
 
           timer?.cancel();
           timer = null;
@@ -333,7 +333,7 @@ class _RecordButtonState extends State<RecordButton> {
         } else if (checkIsLocked(details.localPosition)) {
           widget.controller.reverse();
 
-          Vibrate.feedback(FeedbackType.heavy);
+          Vibration.vibrate();
           debugPrint("Locked recording");
           debugPrint(details.localPosition.dy.toString());
           setState(() {
@@ -343,19 +343,18 @@ class _RecordButtonState extends State<RecordButton> {
         } else {
           widget.controller.reverse();
 
-          Vibrate.feedback(FeedbackType.success);
+          Vibration.vibrate();
 
           timer?.cancel();
           timer = null;
           startTime = null;
           recordDuration = "00:00";
           var filePath = await record!.stop();
-         // print("fuad");
-          if(widget.releaseToSend!) {
+          // print("fuad");
+          if (widget.releaseToSend!) {
             widget.onRecordEnd(filePath!);
-          }
-          else{
-             widget.onCancelRecord();
+          } else {
+            widget.onCancelRecord();
           }
         }
       },
@@ -365,7 +364,7 @@ class _RecordButtonState extends State<RecordButton> {
       },
       onLongPress: () async {
         debugPrint("onLongPress");
-        Vibrate.feedback(FeedbackType.success);
+        Vibration.vibrate();
         if (await Record().hasPermission()) {
           record = Record();
           await record!.start(
