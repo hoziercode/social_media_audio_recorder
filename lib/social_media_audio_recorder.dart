@@ -198,21 +198,27 @@ class _RecordButtonState extends State<RecordButton> {
             children: [
               showLottie
                   ? const LottieAnimation()
-                  : Text(recordDuration,
+                  : Text(
+                      recordDuration,
                       style: TextStyle(
-                          color: widget.allTextColor ?? Colors.black)),
+                        color: widget.allTextColor ?? Colors.black,
+                      ),
+                    ),
               SizedBox(width: widget.size!),
               FlowShader(
                 duration: const Duration(seconds: 3),
                 flowColors: const [Colors.white, Colors.grey],
                 child: Row(
                   children: [
-                    Icon(Icons.keyboard_arrow_left,
-                        color: widget.allTextColor ?? Colors.black),
+                    Icon(
+                      Icons.keyboard_arrow_left,
+                      color: widget.allTextColor ?? Colors.black,
+                    ),
                     Text(
                       "Slide to cancel",
-                      style:
-                          TextStyle(color: widget.allTextColor ?? Colors.black),
+                      style: TextStyle(
+                        color: widget.allTextColor ?? Colors.black,
+                      ),
                     )
                   ],
                 ),
@@ -259,15 +265,21 @@ class _RecordButtonState extends State<RecordButton> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text(recordDuration,
-                    style:
-                        TextStyle(color: widget.allTextColor ?? Colors.black)),
+                Text(
+                  recordDuration,
+                  style: TextStyle(
+                    color: widget.allTextColor ?? Colors.black,
+                  ),
+                ),
                 FlowShader(
                   duration: const Duration(seconds: 3),
                   flowColors: [widget.arrowColor ?? Colors.white, Colors.grey],
-                  child: Text("Tap lock to send",
-                      style: TextStyle(
-                          color: widget.allTextColor ?? Colors.black)),
+                  child: Text(
+                    "Tap lock to send",
+                    style: TextStyle(
+                      color: widget.allTextColor ?? Colors.black,
+                    ),
+                  ),
                 ),
                 const Center(
                   child: FaIcon(
@@ -369,11 +381,10 @@ class _RecordButtonState extends State<RecordButton> {
           record = AudioRecorder();
           await record!.start(
             const RecordConfig(
-              encoder: AudioEncoder.aacLc,
-              bitRate: 128000,
-              sampleRate: 44100,
-              androidConfig: AndroidRecordConfig()
-            ),
+                encoder: AudioEncoder.aacLc,
+                bitRate: 128000,
+                sampleRate: 44100,
+                androidConfig: AndroidRecordConfig()),
             path:
                 "${SocialMediaFilePath.documentPath}audio_${DateTime.now().millisecondsSinceEpoch}.aac",
           );
