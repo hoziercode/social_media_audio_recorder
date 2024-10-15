@@ -74,6 +74,7 @@ class _RecordButtonState extends State<RecordButton> {
 
   bool isLocked = false;
   bool showLottie = false;
+  bool isPuse = false;
 
   @override
   void initState() {
@@ -246,21 +247,7 @@ class _RecordButtonState extends State<RecordButton> {
           padding: const EdgeInsets.only(left: 15, right: 25),
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () async {
-              Vibration.vibrate();
-              timer?.cancel();
-              timer = null;
-              startTime = null;
-              recordDuration = "00:00";
-
-              var filePath = await AudioRecorder().stop(); //Record file
-
-              setState(() {
-                isLocked = false;
-
-                widget.onRecordEnd(filePath!);
-              });
-            },
+            onTap: () async {},
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
@@ -275,18 +262,71 @@ class _RecordButtonState extends State<RecordButton> {
                   duration: const Duration(seconds: 3),
                   flowColors: [widget.arrowColor ?? Colors.white, Colors.grey],
                   child: Text(
-                    "Tap lock to send",
+                    isPuse
+                        ? "Tap pause icon to pause"
+                        : "Tap play icon to resume",
                     style: TextStyle(
                       color: widget.allTextColor ?? Colors.black,
                     ),
                   ),
                 ),
-                const Center(
-                  child: FaIcon(
-                    FontAwesomeIcons.lock,
-                    size: 18,
-                    color: Colors.green,
-                  ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        Vibration.vibrate();
+                        timer?.cancel();
+                        timer = null;
+                        startTime = null;
+                        recordDuration = "00:00";
+                        if (isPuse) {
+                          await record!.resume();
+                          setState(() {
+                            isPuse = false;
+                          });
+                        } else {
+                          await record!.pause();
+                          setState(() {
+                            isPuse = true;
+                          });
+                        }
+                      },
+                      child: Center(
+                        child: FaIcon(
+                          isPuse
+                              ? FontAwesomeIcons.pause
+                              : FontAwesomeIcons.play,
+                          size: 18,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        widget.controller.reverse();
+                        Vibration.vibrate();
+                        timer?.cancel();
+                        timer = null;
+                        startTime = null;
+                        recordDuration = "00:00";
+                        var filePath = await record!.stop();
+                        widget.onRecordEnd(filePath!);
+                        setState(() {
+                          isLocked = false;
+                        });
+                      },
+                      child: const Center(
+                        child: FaIcon(
+                          FontAwesomeIcons.forward,
+                          size: 20,
+                          color: Colors.green,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),
