@@ -259,7 +259,7 @@ class _RecordButtonState extends State<RecordButton> {
                 duration: const Duration(seconds: 3),
                 flowColors: [widget.arrowColor ?? Colors.white, Colors.grey],
                 child: Text(
-                  isPuse ? "Recording sound..." : "Recording paused.",
+                  "Recording sound...",
                   style: TextStyle(
                     color: widget.allTextColor ?? Colors.black,
                   ),
@@ -277,6 +277,7 @@ class _RecordButtonState extends State<RecordButton> {
                       startTime = null;
                       recordDuration = "00:00";
                       await record!.stop();
+                      widget.onCancelRecord();
                       setState(() {
                         isLocked = false;
                       });
@@ -289,39 +290,36 @@ class _RecordButtonState extends State<RecordButton> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () async {
-                      if (isPuse) {
-                        await record!.resume();
-                        startTime = DateTime.now().subtract(
-                          Duration(
-                              seconds: _getElapsedSeconds(recordDuration)),
-                        );
-                        setState(() {
-                          isPuse = false;
-                        });
-                      } else {
-                        timer?.cancel();
-                        await record!.pause();
-                        setState(() {
-                          isPuse = true;
-                        });
-                      }
-                    },
-                    child: Center(
-                      child: FaIcon(
-                        isPuse
-                            ? FontAwesomeIcons.pause
-                            : FontAwesomeIcons.play,
-                        size: 18,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(
+                  //   width: 15,
+                  // ),
+                  // GestureDetector(
+                  //   behavior: HitTestBehavior.opaque,
+                  //   onTap: () async {
+                  //     if (isPuse) {
+                  //       await record!.resume();
+                  //       startTime = DateTime.now().subtract(
+                  //         Duration(seconds: _getElapsedSeconds(recordDuration)),
+                  //       );
+                  //       setState(() {
+                  //         isPuse = false;
+                  //       });
+                  //     } else {
+                  //       timer?.cancel();
+                  //       await record!.pause();
+                  //       setState(() {
+                  //         isPuse = true;
+                  //       });
+                  //     }
+                  //   },
+                  //   child: Center(
+                  //     child: FaIcon(
+                  //       isPuse ? FontAwesomeIcons.pause : FontAwesomeIcons.play,
+                  //       size: 18,
+                  //       color: Colors.green,
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(
                     width: 15,
                   ),
