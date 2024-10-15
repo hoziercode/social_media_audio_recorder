@@ -277,6 +277,9 @@ class _RecordButtonState extends State<RecordButton> {
                       startTime = null;
                       recordDuration = "00:00";
                       await record!.stop();
+                      setState(() {
+                        isLocked = false;
+                      });
                     },
                     child: const Center(
                       child: Icon(
