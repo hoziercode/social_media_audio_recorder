@@ -245,117 +245,113 @@ class _RecordButtonState extends State<RecordButton> {
         ),
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 25),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () async {},
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Text(
-                  recordDuration,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(
+                recordDuration,
+                style: TextStyle(
+                  color: widget.allTextColor ?? Colors.black,
+                ),
+              ),
+              FlowShader(
+                duration: const Duration(seconds: 3),
+                flowColors: [widget.arrowColor ?? Colors.white, Colors.grey],
+                child: Text(
+                  isPuse ? "Recording sound..." : "Recording paused.",
                   style: TextStyle(
                     color: widget.allTextColor ?? Colors.black,
                   ),
                 ),
-                FlowShader(
-                  duration: const Duration(seconds: 3),
-                  flowColors: [widget.arrowColor ?? Colors.white, Colors.grey],
-                  child: Text(
-                    isPuse ? "Recording sound..." : "Recording paused.",
-                    style: TextStyle(
-                      color: widget.allTextColor ?? Colors.black,
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () async {
+                      widget.controller.reverse();
+                      Vibration.vibrate();
+                      timer?.cancel();
+                      timer = null;
+                      startTime = null;
+                      recordDuration = "00:00";
+                      await record!.stop();
+                    },
+                    child: const Center(
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 16,
+                      ),
                     ),
                   ),
-                ),
-                Row(
-                  children: [
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () async {
-                        widget.controller.reverse();
-                        Vibration.vibrate();
-                        timer?.cancel();
-                        timer = null;
-                        startTime = null;
-                        recordDuration = "00:00";
-                        await record!.stop();
-                      },
-                      child: const Center(
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () async {
-                        if (isPuse) {
-                          await record!.resume();
-                          startTime = DateTime.now().subtract(
-                            Duration(
-                                seconds: _getElapsedSeconds(recordDuration)),
-                          );
-                          setState(() {
-                            isPuse = false;
-                          });
-                        } else {
-                          timer?.cancel();
-                          await record!.pause();
-                          setState(() {
-                            isPuse = true;
-                          });
-                        }
-                      },
-                      child: Center(
-                        child: FaIcon(
-                          isPuse
-                              ? FontAwesomeIcons.pause
-                              : FontAwesomeIcons.play,
-                          size: 18,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () async {
-                        widget.controller.reverse();
-                        Vibration.vibrate();
-                        timer?.cancel();
-                        timer = null;
-                        startTime = null;
-                        recordDuration = "00:00";
-                        var filePath = await record!.stop();
-                        widget.onRecordEnd(filePath!);
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () async {
+                      if (isPuse) {
+                        await record!.resume();
+                        startTime = DateTime.now().subtract(
+                          Duration(
+                              seconds: _getElapsedSeconds(recordDuration)),
+                        );
                         setState(() {
-                          isLocked = false;
+                          isPuse = false;
                         });
-                      },
-                      child: const Center(
-                        child: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.green,
-                          child: Icon(
-                            Icons.send,
-                            color: Colors.white,
-                            size: 13,
-                          ),
+                      } else {
+                        timer?.cancel();
+                        await record!.pause();
+                        setState(() {
+                          isPuse = true;
+                        });
+                      }
+                    },
+                    child: Center(
+                      child: FaIcon(
+                        isPuse
+                            ? FontAwesomeIcons.pause
+                            : FontAwesomeIcons.play,
+                        size: 18,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () async {
+                      widget.controller.reverse();
+                      Vibration.vibrate();
+                      timer?.cancel();
+                      timer = null;
+                      startTime = null;
+                      recordDuration = "00:00";
+                      var filePath = await record!.stop();
+                      widget.onRecordEnd(filePath!);
+                      setState(() {
+                        isLocked = false;
+                      });
+                    },
+                    child: const Center(
+                      child: CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.green,
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                          size: 13,
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ],
-            ),
+                    ),
+                  )
+                ],
+              ),
+            ],
           ),
         ),
       ),
