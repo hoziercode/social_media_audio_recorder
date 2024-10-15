@@ -274,11 +274,6 @@ class _RecordButtonState extends State<RecordButton> {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        Vibration.vibrate();
-                        timer?.cancel();
-                        timer = null;
-                        startTime = null;
-                        recordDuration = "00:00";
                         if (isPuse) {
                           await record!.resume();
                           setState(() {
@@ -301,8 +296,8 @@ class _RecordButtonState extends State<RecordButton> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 10,
+                    const SizedBox(
+                      width: 15,
                     ),
                     GestureDetector(
                       onTap: () async {
@@ -319,10 +314,14 @@ class _RecordButtonState extends State<RecordButton> {
                         });
                       },
                       child: const Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.forward,
-                          size: 20,
-                          color: Colors.green,
+                        child: CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.green,
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 13,
+                          ),
                         ),
                       ),
                     )
