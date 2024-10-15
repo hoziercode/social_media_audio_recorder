@@ -262,9 +262,7 @@ class _RecordButtonState extends State<RecordButton> {
                   duration: const Duration(seconds: 3),
                   flowColors: [widget.arrowColor ?? Colors.white, Colors.grey],
                   child: Text(
-                    isPuse
-                        ? "Tap pause icon to pause"
-                        : "Tap play icon to resume",
+                    isPuse ? "Recording sound..." : "Recording paused.",
                     style: TextStyle(
                       color: widget.allTextColor ?? Colors.black,
                     ),
@@ -273,13 +271,41 @@ class _RecordButtonState extends State<RecordButton> {
                 Row(
                   children: [
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () async {
+                        widget.controller.reverse();
+                        Vibration.vibrate();
+                        timer?.cancel();
+                        timer = null;
+                        startTime = null;
+                        recordDuration = "00:00";
+                        await record!.stop();
+                      },
+                      child: const Center(
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () async {
                         if (isPuse) {
                           await record!.resume();
+                          startTime = DateTime.now().subtract(
+                            Duration(
+                                seconds: _getElapsedSeconds(recordDuration)),
+                          );
                           setState(() {
                             isPuse = false;
                           });
                         } else {
+                          timer?.cancel();
                           await record!.pause();
                           setState(() {
                             isPuse = true;
@@ -300,6 +326,7 @@ class _RecordButtonState extends State<RecordButton> {
                       width: 15,
                     ),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () async {
                         widget.controller.reverse();
                         Vibration.vibrate();
@@ -450,5 +477,29 @@ class _RecordButtonState extends State<RecordButton> {
 
   bool isCancelled(Offset offset, BuildContext context) {
     return (offset.dx < -(MediaQuery.of(context).size.width * 0.2));
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      final currentTime = DateTime.now();
+      final elapsed = currentTime.difference(startTime!).inSeconds;
+
+      setState(() {
+        recordDuration = _formatDuration(elapsed);
+      });
+    });
+  }
+
+  String _formatDuration(int seconds) {
+    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+    final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
+    return "$minutes:$remainingSeconds";
+  }
+
+  int _getElapsedSeconds(String duration) {
+    final parts = duration.split(':');
+    final minutes = int.parse(parts[0]);
+    final seconds = int.parse(parts[1]);
+    return minutes * 60 + seconds;
   }
 }
