@@ -2,9 +2,7 @@ library social_media_audio_recorder;
 
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:vibration/vibration.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -86,9 +84,6 @@ class _RecordButtonState extends State<RecordButton> {
         curve: const Interval(0.0, 0.6, curve: Curves.elasticInOut),
       ),
     );
-    widget.controller.addListener(() {
-      setState(() {});
-    });
   }
 
   @override
@@ -271,7 +266,7 @@ class _RecordButtonState extends State<RecordButton> {
                     behavior: HitTestBehavior.opaque,
                     onTap: () async {
                       widget.controller.reverse();
-                      Vibration.vibrate();
+
                       timer?.cancel();
                       timer = null;
                       startTime = null;
@@ -327,7 +322,7 @@ class _RecordButtonState extends State<RecordButton> {
                     behavior: HitTestBehavior.opaque,
                     onTap: () async {
                       widget.controller.reverse();
-                      Vibration.vibrate();
+
                       timer?.cancel();
                       timer = null;
                       startTime = null;
@@ -385,15 +380,13 @@ class _RecordButtonState extends State<RecordButton> {
         debugPrint("onLongPressEnd");
 
         if (isCancelled(details.localPosition, context)) {
-          Vibration.vibrate();
-
           timer?.cancel();
           timer = null;
           startTime = null;
           recordDuration = "00:00";
-          setState(() {
-            showLottie = true;
-          });
+
+          showLottie = true;
+
           widget.onCancelRecord();
 
           Timer(const Duration(milliseconds: 1440), () async {
@@ -408,7 +401,6 @@ class _RecordButtonState extends State<RecordButton> {
         } else if (checkIsLocked(details.localPosition)) {
           widget.controller.reverse();
 
-          Vibration.vibrate();
           debugPrint("Locked recording");
           debugPrint(details.localPosition.dy.toString());
           setState(() {
@@ -417,8 +409,6 @@ class _RecordButtonState extends State<RecordButton> {
           widget.onRecordStart();
         } else {
           widget.controller.reverse();
-
-          Vibration.vibrate();
 
           timer?.cancel();
           timer = null;
@@ -439,7 +429,7 @@ class _RecordButtonState extends State<RecordButton> {
       },
       onLongPress: () async {
         debugPrint("onLongPress");
-        Vibration.vibrate();
+
         if (await AudioRecorder().hasPermission()) {
           record = AudioRecorder();
           await record!.start(
