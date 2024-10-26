@@ -2,6 +2,7 @@ library social_media_audio_recorder;
 
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -84,6 +85,9 @@ class _RecordButtonState extends State<RecordButton> {
         curve: const Interval(0.0, 0.6, curve: Curves.elasticInOut),
       ),
     );
+    widget.controller.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -384,9 +388,9 @@ class _RecordButtonState extends State<RecordButton> {
           timer = null;
           startTime = null;
           recordDuration = "00:00";
-
-          showLottie = true;
-
+          setState(() {
+            showLottie = true;
+          });
           widget.onCancelRecord();
 
           Timer(const Duration(milliseconds: 1440), () async {
